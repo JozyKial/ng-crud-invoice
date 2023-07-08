@@ -1,0 +1,139 @@
+{% extends 'base_.html' %}
+
+{% block title %}NG-INVOICE | Nouveau client{% endblock title %}
+
+{% block content %}
+
+<!-- page content -->
+<div class="right_col" role="main">
+    <div class="">
+        <!-- message d'alert -->        
+            <div class="x_content bs-example-popovers">
+              <br>
+              {% for message in messages %}
+              <div class="alert {{message.tags}} alert-dismissible " role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                </button>
+                 {{ message|safe }}
+              </div>
+              {% endfor %}
+            </div>
+        <!-- /message d'alert -->
+
+        <div class="row">
+            <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Client. <small>Enregistrement d'un nouveau client</small></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <br />
+
+                        <form method="post" id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+                            {% csrf_token %}
+                            <div class="item form-group">
+                                <label class="col-form-label col-md-3 col-sm-3 label-align" for="name_customer">Customer name <span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 ">
+                                    <input type="text" id="name_customer" name="name_customer" required="required" class="form-control ">
+                                </div>
+                            </div>
+
+                            <div class="item form-group">
+                                <label class="col-form-label col-md-3 col-sm-3 label-align" for="email">email <span class="required">*</span>
+                                </label>
+                                <div class="col-md-6 col-sm-6 ">
+                                    <input type="text" id="email" name="email" required="required" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="item form-group">
+                                <label for="phone" class="col-form-label col-md-3 col-sm-3 label-align">phone</label>
+                                <div class="col-md-6 col-sm-6 ">
+                                    <input id="phone" class="form-control" type="text" name="phone">
+                                </div>
+                            </div>
+
+                            <div class="item form-group">
+                                <label for="address" class="col-form-label col-md-3 col-sm-3 label-align">address</label>
+                                <div class="col-md-6 col-sm-6 ">
+                                    <input id="address" class="form-control" type="text" name="address">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="control-label col-md-3 col-sm-3 label-align">Gender</label>
+                                <div class="col-md-6 col-sm-6 ">
+                                    <select class="form-control" name="sexe" id="sexe" required>
+                                        <option value="">Sélectionner..</option>
+                                        <option value="F">Feminin</option>
+                                        <option value="M">Masculin</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="control-label col-md-3 col-sm-3 label-align">Age</label>
+                                <div class="col-md-6 col-sm-6 ">
+                                    <select class="form-control" name="age" id="age" required>
+                                        <option value="">Tranche d'âge..</option>
+                                        <option value="15-25">15-25</option>
+                                        <option value="26-36">26-36</option>
+                                        <option value="37-47">37-47</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="item form-group">
+                                <label for="city" class="col-form-label col-md-3 col-sm-3 label-align">City</label>
+                                <div class="col-md-6 col-sm-6 ">
+                                    <input id="city" class="form-control" type="text" name="city">
+                                </div>
+                            </div>
+
+                            <div class="item form-group">
+                                <label for="zip_code" class="col-form-label col-md-3 col-sm-3 label-align">Zip code</label>
+                                <div class="col-md-6 col-sm-6 ">
+                                    <input id="zip_code" class="form-control" type="text" name="zip_code">
+                                </div>
+                            </div>
+
+                            <div class="ln_solid"></div>
+                            <div class="item form-group">
+                                <div class="col-md-6 col-sm-6 offset-md-3">
+                                    <button class="btn btn-dark" type="button">Annuler</button>
+                                    <button type="submit" class="btn btn-success">Valider</button>
+                                </div>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
+
+{% endblock content %}
+
+
+
+
+
+
+
+

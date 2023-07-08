@@ -1,0 +1,204 @@
+{% extends 'base_.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<!-- page content -->
+<div class="container">
+    <div class="right_col" role="main">
+        <div class="">
+        <div class="row" style="display: block;">
+
+            <!-- haut de tableau -->
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <a href="{% url 'add-facture' %}" class="btn col-md-4 btn-success">
+                        Nouvelle facture <span class="badge text-bg-secondary"></span>
+                    </a>
+                </div>
+            
+                <div class="col-md-6">
+                    <a href="{% url 'add-client' %}" class="btn col-md-4 btn-success from-group row pull-right" id="btnClt">
+                        Nouveau client <span class="badge text-bg-secondary"></span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- /haut de tableau -->
+            <br><br>
+
+            <div class="item form-group">
+                <label class="col-form-label col-md-3 col-sm-3 label-align" for="recherche">Effectuez une recherche
+                </label>
+                <div class="col-md-6 col-sm-6">
+                    <input type="text" id="search" class="form-control" placeholder="Qui recherchez-vous...">
+                </div>
+            </div>
+
+            <div class="col-md-12 col-sm-12  ">
+            <div class="x_panel">
+                <div class="x_title">
+                <h2>Liste des clients.<small>Liste des clients enregistrés</small></h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+
+                <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                <div class="table-responsive">
+                    <table class="table table-striped jambo_table bulk_action">
+                    <thead>
+                        <tr class="headings">
+                            <th class="a-center ">#</th>
+                            <th class="column-title">CUSTOMER NAME </th>
+                            <th class="column-title">DATE </th>
+                            <th class="column-title">TOTAL </th>
+                            <th class="column-title">PAID </th>
+                            <th class="column-title">TYPE OF INVOICE </th>
+                            <th class="column-title no-link last"><span class="nobr">ACTION</span></th>
+                            <th class="bulk-actions" colspan="7">
+                                <a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="myTable">
+                        {% if invoices %}
+                        {% for facture in invoices %}
+                        <tr class="even pointer">
+                            <td class="a-center ">{{ facture.pk }}</td>
+                            <td class=" ">{{ facture.customer }}</td>
+                            <td class=" ">{{ facture.invoice_date_time }}</td>
+                            <td class=" ">{{ facture.get_total_invoice }}</td>
+                            <td class=" ">
+                                {% if facture.paid %}
+                                    <img src="{% static 'images/icon-yes.svg' %}" alt="Payée">
+                                {% else %}
+                                    <img src="{% static 'images/icon-no.svg' %}" alt="Non payée">
+                                {% endif %}
+                            </td>
+                            <!-- nous avons ajouter le préfixe get et le suffixe display sur invoice_type pour avoir à l'écran le nom complet de l'attribut -->
+                            <td class=" ">{{ facture.get_invoice_type_display }}</td>
+                            <td class=" last">
+                                <button type="button" class="btn btn-info btn-sm">Détail</button>
+                                <button type="button" id="btn-invoice-sup" data-toggle="modal" data-target="#supprimer" class="btn btn-danger btn-sm" data-id="{{ facture.pk }}" data-customer="{{ facture.customer.name_customer }}">Supprimer</button>
+                                <button type="button" id="btn-invoice-mod" data-toggle="modal" data-target="#modifier" class="btn btn-warning btn-sm" data-id="{{ facture.pk }}" data-customer="{{ facture.customer.name_customer }}">Modifier</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    {% endfor %}
+                        {% if invoices.has_other_pages %}
+                            <div class="btn-group" role="group" aria-label="Item pagination">
+
+                                {% if invoices.has_previous %}
+                                    <a href="?page={{ invoices.previous_page_number }}" class="btn btn-outline-info">&laquo;</a>
+                                {% endif %}
+
+                                {% for page_number in invoices.paginator.page_range %}
+                                    {% if invoices.number == page_number %}
+                                    <button class="btn btn-outline-info active">
+                                        <span>{{page_number}} <span class="sr-only">(current)</span></span>
+                                    </button>
+                                    {% else %}
+                                    <a href="?page={{ page_number }}" class="btn btn-outline-info">{{page_number}}</a>
+                                    {% endif %}
+                                {% endfor %}
+
+
+                                {% if invoices.has_next %}
+                                    <a href="?page={{ invoices.next_page_number }}" class="btn btn-outline-info">&laquo;</a>
+                                {% endif %}
+
+                            </div>
+                        {% endif %}
+                    {% else %}
+                    <p class="text-muted font-13 m-b-30">Aucune facture trouvée</p>
+                    {% endif %}
+                    </table>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    <!-- /page content -->
+</div>
+
+<!-- Modal modifier -->
+<div class="modal fade" id="modifier" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-dark text-center" id="exampleModalLabel">Modification de l'état de la facture</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+
+                    <input type="hidden" name="id_modified" id="id_modified">
+
+                    <label id="lable_id" class="text-dark ckeckbox-inline"><strong id="strong_id">Cette facture a-t-elle été payée ?</strong></label>
+
+                    <input type="radio" id="html" name="modified" value="True">
+                    <label class="text-white bg-success" for="html">Yes</label>
+
+                    <input type="radio" id="css" name="modified" value="False">
+                    <label class="text-white bg-danger" for="css">No</label>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Fermer</button>
+                    <button class="btn btn-success" type="submit">Sauver</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal supprimer -->
+<div class="modal fade" id="supprimer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-dark text-center" id="exampleModalLabel">Vous êtes sur point de supprimer une facture</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <input type="hidden" name="id_supprimer" id="id_supprimer">
+                    <label id="lable_id_s" class="text-dark ckeckbox-inline"><strong id="strong_id_s">Voulez-vous vraiment supprimer cette facture ?</strong></label>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Fermer</button>
+                    <button class="btn btn-danger" type="submit">Supprimer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $('#search').on("keyup", function(){
+            var valeur = $(this).val().toLowerCase();
+            $('#myTable tr').filter(function(){
+                $(this).toggle($(this).text().toLocaleLowerCase().indexOf(valeur)>-1)
+            });
+        });
+    });
+</script>
+
+
+{% endblock content %}
+
